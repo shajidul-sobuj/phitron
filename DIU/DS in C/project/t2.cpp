@@ -8,7 +8,7 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define endl '\n'
 
-set<tuple<int, int, string, string>> st;
+unordered_set<tuple<int, int, string, string>> st;
 
 void n1()
 {
@@ -30,7 +30,7 @@ void n1()
 void n2()
 {
     cout << endl << endl << "Date   ||   Time   || Temperature  ||  Humidity\n";
-    set<tuple<int, int, string, string>> pr = st;
+    unordered_set<tuple<int, int, string, string>> pr = st;
     for (auto [a,b,c,d] : pr)
     {
         cout << c << "   ||   " << d << "   ||   " << a << "   ||   " << b << endl;
