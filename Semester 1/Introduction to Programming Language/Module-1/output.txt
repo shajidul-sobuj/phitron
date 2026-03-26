@@ -1,0 +1,7 @@
+Enter time in seconds: 
+Equivalent to:
+Years: 109
+Months: 7
+Weeks: 2
+Days: 0
+Total days: 40009

@@ -1,0 +1,49 @@
+Part (a): Prefix → Infix (Without Stack)
+Expression: - * ^ + 1 2 3 + 4 5 / 9 - 4 1
+
+Method: Repeated Substitution (No Stack)
+Scan for the first operator followed by two operands and combine them. Repeat until one expression remains.
+
+Step 1:
+- * ^ + 1 2 3 + 4 5 / 9 - 4 1
+First operator+two operands found: + 1 2
+→ Replace with (1+2)
+- * ^ (1+2) 3 + 4 5 / 9 - 4 1
+
+Step 2:
+- * ^ (1+2) 3 + 4 5 / 9 - 4 1
+Next: ^ (1+2) 3
+→ Replace with ((1+2)^3)
+- * ((1+2)^3) + 4 5 / 9 - 4 1
+
+Step 3:
+- * ((1+2)^3) + 4 5 / 9 - 4 1
+Next: + 4 5
+→ Replace with (4+5)
+- * ((1+2)^3) (4+5) / 9 - 4 1
+
+Step 4:
+- * ((1+2)^3) (4+5) / 9 - 4 1
+Next: - 4 1
+→ Replace with (4-1)
+- * ((1+2)^3) (4+5) / 9 (4-1)
+
+Step 5:
+- * ((1+2)^3) (4+5) / 9 (4-1)
+Next: / 9 (4-1)
+→ Replace with (9/(4-1))
+- * ((1+2)^3) (4+5) (9/(4-1))
+
+Step 6:
+- * ((1+2)^3) (4+5) (9/(4-1))
+Next: * ((1+2)^3) (4+5)
+→ Replace with (((1+2)^3)*(4+5))
+- (((1+2)^3)*(4+5)) (9/(4-1))
+
+Step 7:
+- (((1+2)^3)*(4+5)) (9/(4-1))
+Next: - (((1+2)^3)*(4+5)) (9/(4-1))
+→ Replace with final expression
+
+✅ Final Infix Expression:
+((1+2)3)∗(4+5)−(9/(4−1))((1+2)^3) * (4+5) - (9/(4-1))((1+2)3)∗(4+5)−(9/(4−1))

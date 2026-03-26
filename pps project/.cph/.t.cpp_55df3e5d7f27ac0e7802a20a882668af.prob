@@ -1,0 +1,1 @@
+{"name":"Local: t","url":"e:\\Phitron\\pps project\\t.cpp","tests":[{"id":1765943675151,"input":"13\n(((1)+2)-3)+4","output":"(((1)-2)-3)-4"},{"id":1765943684858,"input":"","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Phitron\\pps project\\t.cpp","group":"local","local":true}

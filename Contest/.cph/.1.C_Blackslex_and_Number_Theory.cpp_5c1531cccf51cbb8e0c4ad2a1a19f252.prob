@@ -1,0 +1,1 @@
+{"name":"Local: 1","url":"e:\\Phitron\\Contest\\1.C_Blackslex_and_Number_Theory.cpp","tests":[{"id":1766502689882,"input":"3\n3\n5 7 9\n2\n2 3\n7\n11 74 5 22 52 97 82\n","output":"5\n2\n6\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Phitron\\Contest\\1.C_Blackslex_and_Number_Theory.cpp","group":"local","local":true}

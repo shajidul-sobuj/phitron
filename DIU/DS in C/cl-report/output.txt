@@ -1,0 +1,6 @@
+False
+Value 25 not found in the list.
+
+
+List elements are - 
+30 --->20 --->

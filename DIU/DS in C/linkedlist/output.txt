@@ -1,0 +1,14 @@
+Printing form Backend: 
+Roll: 109, Name: Akash, CGPA: 2.75
+Roll: 105, Name: Sajid, CGPA: 3.50
+Roll: 102, Name: Sobuj, CGPA: 3.25
+After Insert at Beginning: 
+Roll: 101, Name: Maruf, CGPA: 3.56
+Roll: 102, Name: Sobuj, CGPA: 3.25
+Roll: 105, Name: Sajid, CGPA: 3.50
+Roll: 109, Name: Akash, CGPA: 2.75
+After Delete Last student: 
+Roll: 101, Name: Maruf, CGPA: 3.56
+Roll: 102, Name: Sobuj, CGPA: 3.25
+Roll: 105, Name: Sajid, CGPA: 3.50
+Roll: 105, Name: Sajid, CGPA: 3.50

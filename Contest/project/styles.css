@@ -1,0 +1,21 @@
+:root {
+  --bg: #f6f8fa;
+  --card: #ffffff;
+  --muted: #666;
+  --accent: #2b7cff;
+}
+* { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+body { margin:0; padding:20px; background:var(--bg); color:#111; }
+.container { max-width:900px; margin:0 auto; }
+h1 { margin:0 0 16px; }
+.card { background:var(--card); padding:16px; border-radius:10px; box-shadow:0 4px 14px rgba(20,20,40,0.06); margin-bottom:16px; }
+.card h2 { margin-top:0; }
+form label { display:block; margin-bottom:8px; }
+form input { width:100%; padding:8px 10px; border-radius:6px; border:1px solid #ddd; margin-top:4px; }
+form button { padding:8px 12px; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; margin-top:8px; }
+.controls { margin-bottom:8px; }
+.controls button { margin-right:8px; padding:6px 10px; border-radius:6px; border:1px solid #ddd; background:white; cursor:pointer; }
+#list table { width:100%; border-collapse:collapse; }
+#list th, #list td { padding:8px 6px; border-bottom:1px solid #eee; text-align:left; }
+.small { font-size:90%; color:var(--muted); }
+.editBtn { padding:4px 8px; border-radius:6px; background:#eee; border:none; cursor:pointer;}

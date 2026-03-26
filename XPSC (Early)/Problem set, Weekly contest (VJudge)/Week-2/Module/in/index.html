@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Report Cover Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background: linear-gradient(135deg,#1f1c2c,#928dab);
+    padding:30px;
+}
+
+.wrapper{
+    display:flex;
+    gap:40px;
+    width:100%;
+    max-width:1400px;
+    align-items:flex-start;
+    justify-content: center;
+}
+
+/* LEFT FORM PANEL (Unchanged) */
+
+.form-panel{
+    width:35%;
+    min-width: 350px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    padding:30px;
+    border-radius:20px;
+    color:white;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 30px;
+}
+
+.form-panel h2{
+    margin-bottom:20px;
+    color:#00c6ff;
+    font-size:20px;
+    text-align: center;
+}
+
+.form-panel h3{
+    margin-bottom:10px;
+    color:#00c6ff;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:500;
+    color:#e0e0e0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input{
+    width:100%;
+    padding:10px 12px;
+    margin-top:6px;
+    border:1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.9);
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #00c6ff;
+    box-shadow: 0 0 8px rgba(0, 198, 255, 0.4);
+}
+
+.form-group input::placeholder{
+    color:#999;
+    font-size:13px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+    font-weight:600;
+    font-size: 15px;
+    transition:0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.download-btn{
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color:white;
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+}
+
+.download-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 114, 255, 0.5);
+}
+
+/* RIGHT COVER PAGE (Redesigned for Professional PDF) */
+
+.cover{
+    width: 210mm; /* Exact A4 Width */
+    height: 297mm; /* Exact A4 Height */
+    background: white;
+    padding: 12mm; /* Outer white margin */
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+    position:relative;
+    box-sizing:border-box;
+    color: #222;
+    flex-shrink: 0;
+}
+
+/* PDF Print rules */
+* {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+}
+
+/* Formal Academic Border Design */
+.page-border {
+    border: 3px solid #1a365d;
+    height: 100%;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.page-border-inner {
+    border: 1px solid #1a365d;
+    height: 100%;
+    padding: 35px 40px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* Header Section */
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 15px;
+    color: #1a365d;
+}
+
+.header-section h1 {
+    font-size: 26px;
+    color: #1a365d;
+    margin-bottom: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.3;
+}
+
+.header-section p {
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* Report Title Section */
+.report-title-section {
+    text-align: center;
+    margin: 35px 0;
+}
+
+.report-title-section h2 {
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: #1a365d;
+    font-weight: 700;
+    display: inline-block;
+    border-bottom: 2px solid #1a365d;
+    padding-bottom: 8px;
+}
+
+/* Course Info Table */
+.course-info {
+    margin: 30px 0 40px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.info-table {
+    width: 100%;
+    max-width: 480px;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+}
+
+.info-table td {
+    font-size: 15px;
+    color: #222;
+    vertical-align: top;
+    line-height: 1.4;
+}
+
+.info-table td:first-child {
+    width: 40%;
+    font-weight: 700;
+    color: #1a365d;
+}
+
+/* Submission Grid */
+.submission-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto; /* Pushes it lower if there's space */
+    margin-bottom: 40px;
+}
+
+.submission-box {
+    width: 46%;
+}
+
+.submission-box .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1a365d;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #1a365d;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.submission-box p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin: 4px 0;
+    color: #333;
+}
+
+.submission-box p.name {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #111;
+}
+
+/* Footer Section */
+.footer-section {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
+.footer-section p {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a365d;
+}
+
+/* Make it responsive for the browser preview without affecting PDF */
+@media (max-width: 1200px) {
+    .wrapper { flex-direction: column; align-items: center; }
+    .form-panel { width: 100%; max-width: 600px; position: static; }
+}
+
+@media print {
+    body { background: white; padding: 0; margin: 0; display: block; }
+    .form-panel { display: none; }
+    .wrapper { width: 100%; display: block; gap: 0; margin: 0; }
+    .cover {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100vh;
+        page-break-inside: avoid;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- FORM SIDE -->
+    <div class="form-panel">
+        <h2>Lab Report Details</h2>
+
+        <div class="form-group">
+            <label>University / Institution</label>
+            <input type="text" id="uniInput" placeholder="Enter Institution Name" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="deptInput" placeholder="e.g., Computer Science and Engineering" value="Computer Science and Engineering">
+        </div>
+
+        <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" id="courseInput" placeholder="Enter Course Title" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Course Code</label>
+            <input type="text" id="codeInput" placeholder="Enter Course Code" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Experiment Name</label>
+            <input type="text" id="expInput" placeholder="Enter Experiment Title" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Experiment Number</label>
+            <input type="text" id="expNoInput" placeholder="Enter Experiment No." value="">
+        </div>
+
+        <h3>Submitted To</h3>
+
+        <div class="form-group">
+            <label>Teacher Name</label>
+            <input type="text" id="teacherInput" placeholder="Enter teacher name" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Designation</label>
+            <input type="text" id="designationInput" placeholder="e.g., Professor & Head" value="">
+        </div>
+
+        <h3>Submitted By</h3>
+
+        <div class="form-group">
+            <label>Student Name</label>
+            <input type="text" id="byInput" placeholder="Enter student name" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Student ID</label>
+            <input type="text" id="idInput" placeholder="e.g., 211-15-14782" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Section</label>
+            <input type="text" id="sectionInput" placeholder="e.g., PC-A" value="">
+        </div>
+
+        <div class="form-group">
+            <label>Semester</label>
+            <input type="text" id="semesterInput" placeholder="e.g., Spring 2026" value="">
+        </div>
+
+        <h3>Finalization</h3>
+
+        <div class="form-group">
+            <label>Submission Date</label>
+            <input type="date" id="dateInput" value="">
+        </div>
+
+        <button class="download-btn" onclick="downloadPDF()">Download as PDF</button>
+    </div>
+
+    <!-- COVER SIDE (REDESIGNED) -->
+    <div class="cover" id="cover">
+        <div class="page-border">
+            <div class="page-border-inner">
+                
+                <!-- HEADER -->
+                <div class="header-section">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+                        <path d="M22 10v6M2 10l-10-5-10 5 10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <h1 id="uniText">[Institution Name]</h1>
+                    <p id="deptText">Computer Science and Engineering</p>
+                </div>
+
+                <!-- TITLE -->
+                <div class="report-title-section">
+                    <h2>LAB REPORT</h2>
+                </div>
+
+                <!-- COURSE DETAILS -->
+                <div class="course-info">
+                    <table class="info-table">
+                        <tr>
+                            <td>Course Title</td>
+                            <td>: <span id="courseText">[Course Title]</span></td>
+                        </tr>
+                        <tr>
+                            <td>Course Code</td>
+                            <td>: <span id="codeText">[Course Code]</span></td>
+                        </tr>
+                        <tr>
+                            <td>Experiment No.</td>
+                            <td>: <span id="expNoText">[Exp No]</span></td>
+                        </tr>
+                        <tr>
+                            <td>Name of Experiment</td>
+                            <td>: <span id="expText">[Experiment Name]</span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- SUBMISSION GRID -->
+                <div class="submission-grid">
+                    <!-- SUBMITTED TO -->
+                    <div class="submission-box">
+                        <div class="section-title">Submitted To</div>
+                        <p class="name"><strong id="teacherText">[Teacher Name]</strong></p>
+                        <p id="designationText">[Designation]</p>
+                        <p id="deptDisplayText">Computer Science and Engineering</p>
+                    </div>
+
+                    <!-- SUBMITTED BY -->
+                    <div class="submission-box">
+                        <div class="section-title">Submitted By</div>
+                        <p class="name"><strong id="byText">[Student Name]</strong></p>
+                        <p><strong>ID:</strong> <span id="idText">[Student ID]</span></p>
+                        <p><strong>Section:</strong> <span id="sectionText">[Section]</span></p>
+                        <p><strong>Semester:</strong> <span id="semesterText">[Semester]</span></p>
+                        <p id="deptDisplayText2">Computer Science and Engineering</p>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer-section">
+                    <p>Date of Submission: <span id="dateText">[Date]</span></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Array mappings to allow one input to update multiple places (e.g. Department)
+const inputs = {
+    uniInput: ["uniText"],
+    deptInput: ["deptText", "deptDisplayText", "deptDisplayText2"],
+    courseInput: ["courseText"],
+    codeInput: ["codeText"],
+    expInput: ["expText"],
+    expNoInput: ["expNoText"],
+    teacherInput: ["teacherText"],
+    designationInput: ["designationText"],
+    byInput: ["byText"],
+    idInput: ["idText"],
+    sectionInput: ["sectionText"],
+    semesterInput: ["semesterText"],
+    dateInput: ["dateText"]
+};
+
+for(let key in inputs){
+    const inputElement = document.getElementById(key);
+    if(inputElement){
+        // Store original placeholder texts to show when input is empty
+        const originalTexts = {};
+        inputs[key].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) originalTexts[id] = el.innerText;
+        });
+
+        inputElement.addEventListener("input", function(){
+            let value = this.value;
+            let displayValue = value;
+
+            // Format date if it's a date input
+            if(key === "dateInput" && value){
+                const dateObj = new Date(value);
+                if(!isNaN(dateObj)) {
+                    displayValue = dateObj.toLocaleDateString("en-US", {year: 'numeric', month: 'short', day: '2-digit'});
+                }
+            }
+
+            // Update all targeted elements
+            inputs[key].forEach(id => {
+                const targetElement = document.getElementById(id);
+                if(targetElement){
+                    // If input is cleared, restore the original fallback text so layout doesn't break
+                    targetElement.innerText = displayValue || originalTexts[id] || "\u00A0";
+                }
+            });
+        });
+        
+        // Trigger initial display
+        inputElement.dispatchEvent(new Event('input'));
+    }
+}
+
+function downloadPDF(){
+    try {
+        const fileName = document.getElementById("byInput").value || "Lab_Report";
+        const docName = fileName.replace(/\s+/g, '_');
+        
+        const element = document.getElementById("cover");
+        
+        const opt = {
+            margin: 0, // Margin is handled via CSS
+            filename: docName + "_Cover.pdf",
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                allowTaint: true,
+                scrollY: 0,
+                scrollX: 0
+            },
+            jsPDF: { 
+                orientation: 'portrait', 
+                unit: 'mm', 
+                format: 'a4'
+            },
+            pagebreak: { mode: 'avoid-all' }
+        };
+        
+        html2pdf().set(opt).from(element).save();
+    } catch(error) {
+        console.error("PDF Error:", error);
+        // Display custom message box instead of alert()
+        const errDiv = document.createElement('div');
+        errDiv.textContent = "Error generating PDF. Please try again.";
+        errDiv.style = "position:fixed; top:20px; right:20px; background:#ff4757; color:white; padding:15px; border-radius:5px; z-index:9999; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-weight: 500;";
+        document.body.appendChild(errDiv);
+        setTimeout(() => errDiv.remove(), 4000);
+    }
+}
+
+</script>
+
+</body>
+</html>

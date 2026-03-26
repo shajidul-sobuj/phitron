@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+    ================================================================================
+    README: HOW TO CUSTOMIZE & DEPLOY
+    ================================================================================
+    
+    Hi Kazi! This is your portfolio file. Here's how to make it yours:
+
+    1.  EDITING CONTENT:
+        * TEXT: Find text like "Kazi Shajidul Islam Sobuj" and replace it.
+        * LINKS: All links are placeholders (e.g., `href="https://example.com/your-github"`). 
+            Search for `https://example.com/...` and replace them with your actual profile URLs.
+        * RESUME: Find the "Download Resume" button. Replace `href="resume-placeholder.pdf"` 
+            with the path to your actual PDF file (e.g., `href="Kazi_Sobuj_Resume.pdf"`).
+        * PROJECTS: In the "Projects" section, update the `src` for images, button links, 
+            and descriptions for your two projects.
+        * COUNTERS: In the `<script>` tag at the bottom, find the `counters` array. 
+            Update the `endValue` for 'Problems Solved'.
+
+    2.  DEPLOYING TO GITHUB PAGES (FREE HOSTING):
+        1.  Create a new public repository on GitHub named: `[your-username].github.io`
+        2.  Upload this `index.html` file to that repository.
+        3.  (If you added a resume PDF, upload that too).
+        4.  That's it! Your site will be live at `https://[your-username].github.io`
+        
+    ================================================================================
+    -->
+
+    <!-- SEO Meta Tags -->
+    <title>Kazi Shajidul Islam Sobuj - Portfolio</title>
+    <meta name="description" content="Personal portfolio of Kazi Shajidul Islam Sobuj, a competitive programmer and web developer.">
+    <meta name="keywords" content="Kazi Shajidul Islam Sobuj, portfolio, competitive programmer, web developer, codeforces, hackerrank, beecrowd">
+    <meta name="author" content="Kazi Shajidul Islam Sobuj">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Typed.js CDN (for hero typing effect) -->
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+    <!-- Custom Styles & CSS Variables -->
+    <style>
+        :root {
+            /* Color Palette */
+            --color-bg-light: #f8f9fa; /* Light mode background */
+            --color-text-light: #212529; /* Light mode text */
+            --color-bg-dark: #121212;   /* Dark mode background */
+            --color-text-dark: #e9ecef;  /* Dark mode text */
+            --color-primary: #007bff;     /* Main accent color (blue) */
+            --color-primary-hover: #0056b3;
+            --color-card-light: #ffffff;
+            --color-card-dark: #1e1e1e;
+            --color-border-light: #e0e0e0;
+            --color-border-dark: #333333;
+        }
+
+        /* Base font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Light Mode */
+        .light {
+            background-color: var(--color-bg-light);
+            color: var(--color-text-light);
+        }
+        .light .bg-card {
+            background-color: var(--color-card-light);
+            border: 1px solid var(--color-border-light);
+        }
+        .light .border-themed {
+            border-color: var(--color-border-light);
+        }
+        .light .text-themed-primary {
+            color: var(--color-text-light);
+        }
+        .light .text-themed-secondary {
+            color: #495057;
+        }
+
+        /* Dark Mode */
+        .dark {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-dark);
+        }
+        .dark .bg-card {
+            background-color: var(--color-card-dark);
+            border: 1px solid var(--color-border-dark);
+        }
+        .dark .border-themed {
+            border-color: var(--color-border-dark);
+        }
+        .dark .text-themed-primary {
+            color: var(--color-text-dark);
+        }
+        .dark .text-themed-secondary {
+            color: #adb5bd;
+        }
+
+        /* Accent Color */
+        .text-primary {
+            color: var(--color-primary);
+        }
+        .bg-primary {
+            background-color: var(--color-primary);
+        }
+        .hover\:bg-primary-hover:hover {
+            background-color: var(--color-primary-hover);
+        }
+        .border-primary {
+            border-color: var(--color-primary);
+        }
+        .ring-primary:focus {
+            --tw-ring-color: var(--color-primary);
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Typed.js Cursor */
+        .typed-cursor {
+            color: var(--color-primary);
+            animation: typed-blink 0.7s infinite;
+        }
+        @keyframes typed-blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Form Validation */
+        .form-input.invalid {
+            border-color: #dc3545; /* Red border for invalid */
+        }
+        .form-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body class="light transition-colors duration-300">
+
+    <!-- 
+    ========================================
+    HEADER & NAVIGATION
+    ========================================
+    -->
+    <header class="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 dark:bg-[#121212]/80 border-b border-themed transition-colors duration-300">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo / Name -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-2xl font-bold text-primary">Sobuj.dev</a>
+                </div>
+                
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#about" class="text-themed-secondary hover:text-primary transition-colors duration-200">About</a>
+                    <a href="#skills" class="text-themed-secondary hover:text-primary transition-colors duration-200">Skills</a>
+                    <a href="#projects" class="text-themed-secondary hover:text-primary transition-colors duration-200">Projects</a>
+                    <a href="#experience" class="text-themed-secondary hover:text-primary transition-colors duration-200">Experience</a>
+                    <a href="#contact" class="text-themed-secondary hover:text-primary transition-colors duration-200">Contact</a>
+                </div>
+
+                <!-- Dark/Light Toggle -->
+                <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-full text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200" aria-label="Toggle dark mode">
+                        <!-- Sun Icon (Light Mode) -->
+                        <svg id="theme-icon-light" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591" />
+                        </svg>
+                        <!-- Moon Icon (Dark Mode) -->
+                        <svg id="theme-icon-dark" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="p-2 rounded-md text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden ml-2" aria-label="Open menu">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-themed">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700">About</a>
+                <a href="#skills" class="block px-3 py-2 rounded-md text-base font-medium text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700">Skills</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700">Projects</a>
+                <a href="#experience" class="block px-3 py-2 rounded-md text-base font-medium text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700">Experience</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-themed-secondary hover:bg-gray-200 dark:hover:bg-gray-700">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- 
+        ========================================
+        HERO SECTION
+        ========================================
+        -->
+        <section id="hero" class="min-h-[calc(100vh-4rem)] flex items-center py-20 md:py-32">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Hero Text Content -->
+                <div class="reveal">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-themed-primary leading-tight">
+                        Hi, I'm Kazi.<br/>
+                        I'm a <span id="typed-hero" class="text-primary"></span>
+                    </h1>
+                    <p class="mt-6 text-lg text-themed-secondary max-w-lg">
+                        A passionate competitive programmer and aspiring developer, focused on building efficient solutions and always learning.
+                    </p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="mt-8 flex flex-wrap gap-4">
+                        <!-- CUSTOMIZE: Replace 'resume-placeholder.pdf' with your actual resume file -->
+                        <a href="resume-placeholder.pdf" download
+                           class="inline-block bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:bg-primary-hover transform hover:-translate-y-0.5 transition-all duration-300">
+                           Download Resume
+                        </a>
+                        <a href="#contact"
+                           class="inline-block bg-card text-themed-primary font-medium py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 border border-transparent">
+                           Get in Touch
+                        </a>
+                    </div>
+                    
+                    <!-- Animated Counters -->
+                    <div class="mt-12 flex gap-8">
+                        <div class="text-center">
+                            <span id="counter-projects" class="text-4xl font-bold text-primary">0</span>
+                            <p class="text-sm text-themed-secondary uppercase tracking-wider">Projects Built</p>
+                        </div>
+                        <div class="text-center">
+                            <!-- CUSTOMIZE: Update the end-value in the script tag at the bottom -->
+                            <span id="counter-problems" class="text-4xl font-bold text-primary">0</span>
+                            <p class="text-sm text-themed-secondary uppercase tracking-wider">Problems Solved</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Animated SVG -->
+                <div class="flex items-center justify-center reveal">
+                    <svg class="w-full max-w-md" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color: var(--color-primary); stop-opacity: 0.8" />
+                                <stop offset="100%" style="stop-color: var(--color-primary); stop-opacity: 1" />
+                            </linearGradient>
+                        </defs>
+                        <path fill="url(#gradient)" d="M48.2,-64.1C62.2,-53.4,73.1,-38.7,76.5,-22.8C80,-6.8,76,10.6,68.9,25.9C61.8,41.2,51.6,54.4,38.5,63.1C25.4,71.7,9.4,75.9,-6,76.2C-21.3,76.5,-42.6,73,-57.1,62.3C-71.6,51.6,-79.3,33.8,-80.7,15.6C-82.1,-2.6,-77.2,-21.1,-67.2,-36.3C-57.2,-51.5,-42,-63.3,-26.1,-69.6C-10.2,-75.8,-0.5,-76.5,9.5,-73.4C19.6,-70.3,34.1,-74.8,48.2,-64.1Z" transform="translate(100 100)">
+                            <animateTransform
+                                attributeName="transform"
+                                type="rotate"
+                                from="0 100 100"
+                                to="360 100 100"
+                                dur="25s"
+                                repeatCount="indefinite"
+                            />
+                        </path>
+                        <!-- Simple Code Icon in Center -->
+                        <text x="50%" y="50%" fill="#ffffff" font-size="24" font-family="monospace" text-anchor="middle" dominant-baseline="central" transform="translate(0, 5)">
+                            &lt;/&gt;
+                        </text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+        ========================================
+        ABOUT SECTION
+        ========================================
+        -->
+        <section id="about" class="py-20 md:py-32 reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-themed-primary mb-4">About Me</h2>
+            <p class="text-primary text-center font-medium mb-12">A brief introduction</p>
+            <div class="max-w-3xl mx-auto text-lg text-themed-secondary space-y-6 text-center leading-relaxed">
+                <!-- CUSTOMIZE: Update this paragraph with your own words -->
+                <p>
+                    I'm a competitive programmer and a Computer Science student, actively practicing on platforms like 
+                    <strong class="text-themed-primary font-medium">Codeforces</strong>, 
+                    <strong class="text-themed-primary font-medium">HackerRank</strong>, and 
+                    <strong class="text-themed-primary font-medium">Beecrowd</strong>. 
+                    Problem-solving is my passion, and I'm most comfortable coding in <strong class="text-themed-primary font-medium">C</strong>.
+                </p>
+                <p>
+                    I'm also exploring web development and have foundational knowledge in 
+                    <strong class="text-themed-primary font-medium">HTML, CSS, and JavaScript</strong>, 
+                    along with version control using <strong class="text-themed-primary font-medium">Git/GitHub</strong>. 
+                    Currently, I serve as a <strong class="text-themed-primary font-medium">Club Executive</strong>, 
+                    which helps me build leadership and teamwork skills. I'm eager to learn, grow, and take on new challenges.
+                </p>
+            </div>
+        </section>
+
+        <!-- 
+        ========================================
+        SKILLS / STATUS SECTION
+        ========================================
+        -->
+        <section id="skills" class="py-20 md:py-32 reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-themed-primary mb-4">My Skills & Status</h2>
+            <p class="text-primary text-center font-medium mb-12">What I'm focused on</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Skill Card 1: Competitive Programming -->
+                <div class="bg-card p-8 rounded-xl shadow-lg transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                    <h3 class="text-2xl font-bold text-themed-primary mb-4">Competitive Programming</h3>
+                    <p class="text-themed-secondary mb-6">Actively solving problems and participating in contests. My preferred language is C.</p>
+                    <h4 class="font-semibold text-themed-primary mb-3">My Profiles:</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <!-- CUSTOMIZE: Add your profile links -->
+                        <a href="https://example.com/your-codeforces" target="_blank" rel="noopener noreferrer" class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full hover:bg-primary hover:text-white transition-colors duration-200">Codeforces</a>
+                        <a href="https://example.com/your-hackerrank" target="_blank" rel="noopener noreferrer" class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full hover:bg-primary hover:text-white transition-colors duration-200">HackerRank</a>
+                        <a href="https://example.com/your-beecrowd" target="_blank" rel="noopener noreferrer" class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full hover:bg-primary hover:text-white transition-colors duration-200">Beecrowd</a>
+                    </div>
+                </div>
+
+                <!-- Skill Card 2: Languages -->
+                <div class="bg-card p-8 rounded-xl shadow-lg transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                    <h3 class="text-2xl font-bold text-themed-primary mb-4">Languages</h3>
+                    <p class="text-themed-secondary mb-6">My current language toolkit.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="inline-block bg-primary/10 text-primary border border-primary/20 text-sm font-medium py-1.5 px-3 rounded-full">C (Proficient)</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 3: Web Development -->
+                <div class="bg-card p-8 rounded-xl shadow-lg transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                    <h3 class="text-2xl font-bold text-themed-primary mb-4">Web & Tools</h3>
+                    <p class="text-themed-secondary mb-6">Building foundational skills in web technologies and development tools.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full">HTML (Basic)</span>
+                        <span class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full">CSS (Basic)</span>
+                        <span class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full">JavaScript (Basic)</span>
+                        <span class="inline-block bg-gray-200 dark:bg-gray-700 text-themed-secondary text-sm font-medium py-1.5 px-3 rounded-full">Git & GitHub</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 
+        ========================================
+        PROJECTS SECTION
+        ========================================
+        -->
+        <section id="projects" class="py-20 md:py-32 reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-themed-primary mb-4">My Projects</h2>
+            <p class="text-primary text-center font-medium mb-12">A couple of things I've built</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- CUSTOMIZE: Project 1 Card -->
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col">
+                    <img src="https://placehold.co/600x400/007bff/white?text=Project+1+Screenshot" 
+                         alt="Project 1 Placeholder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-themed-primary mb-3">Project Title 1</h3>
+                        <p class="text-themed-secondary mb-4 flex-grow">
+                            A short description of your first project. Explain what it does, why you built it, and what you learned.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-themed-secondary py-1 px-3 rounded-full">HTML</span>
+                            <span class="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-themed-secondary py-1 px-3 rounded-full">CSS</span>
+                        </div>
+                        <div class="flex gap-4 mt-auto">
+                            <!-- CUSTOMIZE: Add project links -->
+                            <a href="https://example.com/your-github-repo" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors duration-200">View Code</a>
+                            <a href="https://example.com/your-live-demo" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-card text-themed-primary font-medium py-2 px-4 rounded-lg border border-themed hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">Live Demo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CUSTOMIZE: Project 2 Card -->
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col">
+                    <img src="https://placehold.co/600x400/007bff/white?text=Project+2+Screenshot" 
+                         alt="Project 2 Placeholder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-themed-primary mb-3">Project Title 2</h3>
+                        <p class="text-themed-secondary mb-4 flex-grow">
+                            A short description of your second project. Keep it concise and focused on the outcome.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-themed-secondary py-1 px-3 rounded-full">HTML</span>
+                            <span class="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-themed-secondary py-1 px-3 rounded-full">CSS</span>
+                            <span class="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-themed-secondary py-1 px-3 rounded-full">JavaScript</span>
+                        </div>
+                        <div class="flex gap-4 mt-auto">
+                            <!-- CUSTOMIZE: Add project links -->
+                            <a href="https://example.com/your-github-repo-2" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors duration-200">View Code</a>
+                            <a href="https://example.com/your-live-demo-2" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-card text-themed-primary font-medium py-2 px-4 rounded-lg border border-themed hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">Live Demo</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 
+        ========================================
+        EXPERIENCE SECTION
+        ========================================
+        -->
+        <section id="experience" class="py-20 md:py-32 reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-themed-primary mb-4">Experience</h2>
+            <p class="text-primary text-center font-medium mb-12">My roles and responsibilities</p>
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-card p-8 rounded-xl shadow-lg transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <!-- CUSTOMIZE: Update role, club, and description -->
+                            <h3 class="text-2xl font-bold text-primary">Club Executive</h3>
+                            <p class="text-lg font-semibold text-themed-primary mt-1">Your Club Name</p>
+                        </div>
+                        <span class="text-sm text-themed-secondary flex-shrink-0 ml-4">Date Range</span>
+                    </div>
+                    <ul class="list-disc list-inside text-themed-secondary mt-4 space-y-2">
+                        <li>Short description of your responsibility 1.</li>
+                        <li>Short description of your responsibility 2.</li>
+                        <li>Highlight a key achievement or skill learned.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+        ========================================
+        CONTACT SECTION
+        ========================================
+        -->
+        <section id="contact" class="py-20 md:py-32 reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center text-themed-primary mb-4">Get In Touch</h2>
+            <p class="text-primary text-center font-medium mb-12">I'd love to hear from you!</p>
+            
+            <div class="max-w-3xl mx-auto bg-card p-8 rounded-xl shadow-lg">
+                <p id="form-success" class="mb-4 text-green-600 hidden">Your message has been pre-filled in your email client!</p>
+                <p id="form-error" class="mb-4 text-red-600 hidden">Please fill out all fields correctly.</p>
+                
+                <!-- This form uses JS to construct a 'mailto:' link. No backend needed. -->
+                <form id="contact-form" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-themed-secondary mb-2">Your Name</label>
+                        <input type="text" id="name" name="name" required
+                               class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-themed focus:outline-none focus:ring-2 ring-primary text-themed-primary">
+                        <span id="name-error" class="form-error">Please enter your name.</span>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-themed-secondary mb-2">Your Email</label>
+                        <input type="email" id="email" name="email" required
+                               class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-themed focus:outline-none focus:ring-2 ring-primary text-themed-primary">
+                        <span id="email-error" class="form-error">Please enter a valid email address.</span>
+                    </div>
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-themed-secondary mb-2">Subject</label>
+                        <input type="text" id="subject" name="subject" required
+                               class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-themed focus:outline-none focus:ring-2 ring-primary text-themed-primary">
+                        <span id="subject-error" class="form-error">Please enter a subject.</span>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-themed-secondary mb-2">Message</label>
+                        <textarea id="message" name="message" rows="5" required
+                                  class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-themed focus:outline-none focus:ring-2 ring-primary text-themed-primary"></textarea>
+                        <span id="message-error" class="form-error">Please enter your message.</span>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:bg-primary-hover transform hover:-translate-y-0.5 transition-all duration-300">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 
+    ========================================
+    FOOTER SECTION
+    ========================================
+    -->
+    <footer class="border-t border-themed mt-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <!-- Social Links -->
+                <div class="flex gap-6">
+                    <!-- CUSTOMIZE: Add all your social links -->
+                    <a href="https://example.com/your-github" target="_blank" rel="noopener noreferrer" class="text-themed-secondary hover:text-primary transition-colors duration-200" aria-label="GitHub">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a href="https://example.com/your-linkedin" target="_blank" rel="noopener noreferrer" class="text-themed-secondary hover:text-primary transition-colors duration-200" aria-label="LinkedIn">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                    </a>
+                    <a href="https://example.com/your-codeforces" target="_blank" rel="noopener noreferrer" class="text-themed-secondary hover:text-primary transition-colors duration-200 font-bold" aria-label="Codeforces">CF</a>
+                    <a href="https://example.com/your-hackerrank" target="_blank" rel="noopener noreferrer" class="text-themed-secondary hover:text-primary transition-colors duration-200" aria-label="HackerRank">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10zm-1-15h-3v10h3v-10zm5 0h-3v10h3v-10z" /></svg>
+                    </a>
+                    <!-- CUSTOMIZE: Add your email -->
+                    <a href="mailto:your-email@example.com" class="text-themed-secondary hover:text-primary transition-colors duration-200" aria-label="Email">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                    </a>
+                </div>
+                <!-- Copyright -->
+                <p class="text-sm text-themed-secondary text-center md:text-right">
+                    &copy; <span id="current-year"></span> Kazi Shajidul Islam Sobuj. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- 
+    ========================================
+    JAVASCRIPT
+    ========================================
+    -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==================================
+            // THEME (DARK/LIGHT) TOGGLER
+            // ==================================
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIconLight = document.getElementById('theme-icon-light');
+            const themeIconDark = document.getElementById('theme-icon-dark');
+            const body = document.body;
+
+            // Check for saved theme in localStorage
+            if (localStorage.getItem('theme') === 'dark' || 
+                (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeIconLight.classList.remove('hidden');
+                themeIconDark.classList.add('hidden');
+            } else {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeIconLight.classList.add('hidden');
+                themeIconDark.classList.remove('hidden');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('light')) {
+                    body.classList.remove('light');
+                    body.classList.add('dark');
+                    themeIconLight.classList.remove('hidden');
+                    themeIconDark.classList.add('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark');
+                    body.classList.add('light');
+                    themeIconLight.classList.add('hidden');
+                    themeIconDark.classList.remove('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // ==================================
+            // MOBILE MENU TOGGLE
+            // ==================================
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileNavLinks = mobileMenu.querySelectorAll('a');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when a link is clicked
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // ==================================
+            // TYPED.JS HERO EFFECT
+            // ==================================
+            if (typeof Typed !== 'undefined') {
+                new Typed('#typed-hero', {
+                    strings: ['Competitive Programmer.', 'Developer.', 'Problem Solver.', 'Learner.'],
+                    typeSpeed: 60,
+                    backSpeed: 30,
+                    backDelay: 1500,
+                    loop: true,
+                    smartBackspace: true,
+                });
+            } else {
+                // Fallback if CDN fails
+                document.getElementById('typed-hero').textContent = 'Developer.';
+            }
+
+            // ==================================
+            // SCROLL REVEAL ANIMATIONS
+            // ==================================
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // ==================================
+            // ANIMATED COUNTERS
+            // ==================================
+            const counters = [
+                // CUSTOMIZE: Update endValue for "Problems Solved"
+                { id: 'counter-projects', endValue: 2, duration: 1500 },
+                { id: 'counter-problems', endValue: 500, duration: 2000 } // Example: 500+
+            ];
+
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = counters.find(c => c.id === entry.target.id);
+                        if (counter && !entry.target.classList.contains('counted')) {
+                            animateCounter(entry.target, counter.endValue, counter.duration);
+                            entry.target.classList.add('counted');
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.8
+            });
+
+            counters.forEach(counter => {
+                const el = document.getElementById(counter.id);
+                if(el) counterObserver.observe(el);
+            });
+
+            function animateCounter(element, endValue, duration) {
+                let startTime = null;
+                const startValue = 0;
+
+                const step = (timestamp) => {
+                    if (!startTime) startTime = timestamp;
+                    const progress = Math.min((timestamp - startTime) / duration, 1);
+                    const currentValue = Math.floor(progress * (endValue - startValue) + startValue);
+                    
+                    // FIX: Changed 'counter.id' to 'element.id'
+                    // 'counter' was not defined in this function's scope, but 'element' is the DOM element
+                    // which has the 'id' we need to check.
+                    element.textContent = currentValue.toLocaleString() + (element.id === 'counter-problems' ? '+' : '');
+                    
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            // ==================================
+            // CONTACT FORM (MAILTO:)
+            // ==================================
+            const contactForm = document.getElementById('contact-form');
+            const formSuccess = document.getElementById('form-success');
+            const formError = document.getElementById('form-error');
+
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Hide previous messages
+                formSuccess.classList.add('hidden');
+                formError.classList.add('hidden');
+
+                // Clear previous errors
+                document.querySelectorAll('.form-input').forEach(input => input.classList.remove('invalid'));
+                document.querySelectorAll('.form-error').forEach(err => err.style.display = 'none');
+
+                // Get form data
+                const name = document.getElementById('name');
+                const email = document.getElementById('email');
+                const subject = document.getElementById('subject');
+                const message = document.getElementById('message');
+                
+                // Simple Validation
+                let isValid = true;
+                if (!name.value.trim()) {
+                    isValid = false;
+                    name.classList.add('invalid');
+                    document.getElementById('name-error').style.display = 'block';
+                }
+                if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) {
+                    isValid = false;
+                    email.classList.add('invalid');
+                    document.getElementById('email-error').style.display = 'block';
+                }
+                if (!subject.value.trim()) {
+                    isValid = false;
+                    subject.classList.add('invalid');
+                    document.getElementById('subject-error').style.display = 'block';
+                }
+                if (!message.value.trim()) {
+                    isValid = false;
+                    message.classList.add('invalid');
+                    document.getElementById('message-error').style.display = 'block';
+                }
+
+                if (isValid) {
+                    // CUSTOMIZE: Set your email address here
+                    const myEmail = 'your-email@example.com'; 
+                    const mailtoSubject = encodeURIComponent(subject.value);
+                    const mailtoBody = encodeURIComponent(
+                        `Hello Kazi,\n\n${message.value}\n\nFrom,\n${name.value}\n(${email.value})`
+                    );
+                    
+                    // Open user's default email client
+                    window.location.href = `mailto:${myEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
+                    
+                    formSuccess.classList.remove('hidden');
+                    contactForm.reset();
+                } else {
+                    formError.classList.remove('hidden');
+                }
+            });
+
+            // ==================================
+            // SET CURRENT YEAR IN FOOTER
+            // ==================================
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        });
+    </script>
+</body>
+</html>
+

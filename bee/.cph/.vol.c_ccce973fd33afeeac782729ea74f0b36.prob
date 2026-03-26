@@ -1,0 +1,1 @@
+{"name":"Local: vol","url":"e:\\Phitron\\bee\\vol.c","tests":[{"id":1761944119187,"input":"apple\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Phitron\\bee\\vol.c","group":"local","local":true}

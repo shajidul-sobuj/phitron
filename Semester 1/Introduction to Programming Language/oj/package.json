@@ -1,0 +1,13 @@
+{
+  "name": "hsc-c-contest",
+  "version": "1.0.0",
+  "description": "Mini HSC C Programming Contest - fullstack (Express + static frontend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
+  }
+}

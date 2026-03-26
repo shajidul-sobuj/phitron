@@ -1,0 +1,17 @@
+course_bot/
+│
+├── config.py             # Settings, Keywords, Secrets
+├── database.py           # SQLite deduplication logic
+├── main.py               # Entry point (Scheduler)
+├── requirements.txt      # Dependencies
+│
+├── platforms/            # Scraper modules
+│   ├── __init__.py
+│   ├── base.py           # Abstract Base Class
+│   ├── udemy.py          # DiscUdemy scraper
+│   ├── coursera.py       # Coursera Search scraper
+│   └── fcc.py            # freeCodeCamp RSS parser
+│
+└── utils/
+    ├── __init__.py
+    └── notifier.py       # Telegram formatting & sending

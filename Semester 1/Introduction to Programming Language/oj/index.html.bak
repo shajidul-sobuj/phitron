@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HSC C Contest — Start</title>
+  <link href="/css/styles.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-3">HSC C Programming Practice Contest</h1>
+    <p class="text-muted">Enter your name and HSC batch to start. Each IP can start the contest only once.</p>
+
+    <div class="card p-4" style="max-width:600px">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" class="form-control" placeholder="Enter your full name" title="Your full name" />
+      </div>
+      <div class="mb-3">
+        <label for="batch" class="form-label">Batch</label>
+        <input id="batch" class="form-control" placeholder="e.g., 2025" title="Your HSC batch year" />
+      </div>
+      <div id="msg" class="mb-3 text-danger"></div>
+      <button id="startBtn" class="btn btn-primary">Start Contest</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const batch = document.getElementById('batch').value.trim();
+      const msg = document.getElementById('msg');
+      msg.textContent = '';
+      if (!name || !batch) { msg.textContent = 'Name and batch are required'; return; }
+      try {
+        const res = await fetch('/api/start', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ name, batch })
+        });
+        const j = await res.json();
+        if (!res.ok) { msg.textContent = j.error || 'Failed to start'; return; }
+        // Save token to localStorage
+        localStorage.setItem('contestToken', j.token);
+        // Redirect to contest page
+        window.location.href = '/contest.html';
+      } catch (err) {
+        msg.textContent = 'Network error';
+      }
+    });
+  </script>
+</body>
+</html>

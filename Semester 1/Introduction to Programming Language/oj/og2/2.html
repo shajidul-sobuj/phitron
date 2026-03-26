@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC C Programming Practice Contest</title>
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- ADDED: Firebase SDKs -->
+    <script type="module">
+        // Initialize Firebase
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        if (firebaseConfig) {
+            try {
+                const app = firebase.initializeApp(firebaseConfig);
+                const db = firebase.firestore(app);
+                const auth = firebase.auth(app);
+                
+                // Set log level
+                firebase.setLogLevel('Debug');
+                
+                // Store db and auth globally for the main script
+                window.db = db;
+                window.auth = auth;
+                window.appId = appId;
+                
+                // Sign in
+                auth.onAuthStateChanged(async (user) => {
+                    if (!user) {
+                        try {
+                            const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                            if (authToken) {
+                                await auth.signInWithCustomToken(authToken);
+                            } else {
+                                await auth.signInAnonymously();
+                            }
+                        } catch (error) {
+                            console.error("Firebase Auth Error:", error);
+                        }
+                    }
+                    // Signal that auth is ready
+                    document.dispatchEvent(new Event('firebaseAuthReady'));
+                });
+            } catch (e) {
+                console.error("Firebase initialization error:", e);
+                document.dispatchEvent(new Event('firebaseAuthReady')); // Still signal, even on fail
+            }
+        } else {
+            console.warn("Firebase config not found. App will run without timer sync.");
+            document.dispatchEvent(new Event('firebaseAuthReady')); // Signal to proceed
+        }
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- 2. Custom styles for the app -->
+    <style>
+        /* Simple styling for the active tab */
+        .tab-btn.active {
+            border-bottom-width: 2px;
+            --tw-border-opacity: 1;
+            border-color: rgb(59 130 246 / var(--tw-border-opacity));
+            --tw-text-opacity: 1;
+            color: rgb(59 130 246 / var(--tw-text-opacity));
+            font-weight: 600;
+        }
+        /* Style the code editor (textarea) */
+        #code-editor {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            background-color: #1e293b; /* slate-800 */
+            color: #f1f5f9; /* slate-100 */
+            border: 2px solid #334155; /* slate-700 */
+            caret-color: #34d399; /* emerald-400 */
+        }
+        /* Custom styles for result boxes */
+        .result-base {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .result-success {
+            background-color: #dcfce7; /* green-100 */
+            border: 1px solid #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+        }
+        .result-fail {
+            background-color: #fee2e2; /* red-100 */
+            border: 1px solid #f87171; /* red-400 */
+            color: #991b1b; /* red-800 */
+        }
+        .result-running {
+            background-color: #e0e7ff; /* indigo-100 */
+            border: 1px solid #818cf8; /* indigo-400 */
+            color: #3730a3; /* indigo-800 */
+        }
+        .result-error {
+            background-color: #fef9c3; /* yellow-100 */
+            border: 1px solid #facc15; /* yellow-400 */
+            color: #713f12; /* yellow-800 */
+        }
+        .result-pre {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #1f2937; /* gray-800 */
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900 antialiased">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md w-full">
+        <div class="container mx-auto p-4">
+            <h1 class="text-2xl font-bold">Welcome to HSC C Contest</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 my-6">
+
+        <!-- MODIFIED: Registration Block -->
+        <div id="registration-area" class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4">Participant Check-In</h2>
+            <p class="text-gray-600 mb-4">Please enter your registered name and email to begin.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="participant-name" class="block text-sm font-medium text-gray-700">Participant Name:</label>
+                    <input type="text" id="participant-name" placeholder="Enter your full name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="participant-email" class="block text-sm font-medium text-gray-700">Participant Email:</label>
+                    <input type="email" id="participant-email" placeholder="Enter your registered email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                </div>
+                <div class="flex items-end">
+                    <button id="check-in-button" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                        Check-In
+                    </button>
+                </div>
+            </div>
+            <div id="registration-message" class="mt-4 text-sm font-medium"></div>
+        </div>
+
+        <!-- MODIFIED: Main Contest Area (Hidden by default) -->
+        <div id="main-contest-area" class="hidden">
+
+            <!-- Timer and Score Bar -->
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="text-sm font-medium text-gray-700">Participant:</div>
+                    <div id="display-participant-name" class="text-lg font-bold text-blue-600 truncate"></div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-center items-center">
+                    <div class="text-sm font-medium text-gray-700">Time Left</div>
+                    <div id="timer-display" class="text-3xl font-bold text-blue-600">
+                        <div id="timer">--:--</div>
+                        <button id="start-contest-btn" class="hidden text-sm font-bold bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                            Start Contest
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-center items-center">
+                    <div class="text-sm font-medium text-gray-700">Total Score</div>
+                    <div id="score" class="text-3xl font-bold text-green-600">0</div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Left Column: Problems -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">Contest Problems</h2>
+                    
+                    <!-- Problem Tabs -->
+                    <div class="flex border-b mb-4 space-x-4">
+                        <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600 active" data-problem="problem-1">Problem 1</button>
+                        <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600" data-problem="problem-2">Problem 2</button>
+                        <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600" data-problem="problem-3">Problem 3</button>
+                    </div>
+
+                    <div class="problem-content-area space-y-4">
+                        <!-- Problem 1: Hello World -->
+                        <div id="problem-1" class="problem-content space-y-3">
+                            <h3 class="text-lg font-semibold text-blue-700">Problem 1: Hello, HSC!</h3>
+                            <p>Your first task is to print the exact string <strong>"Hello, HSC!"</strong> to the console.</p>
+                            <h4 class="font-semibold">Input Format:</h4>
+                            <p>No input is required for this problem.</p>
+                            <h4 class="font-semibold">Output Format:</h4>
+                            <p>A single line containing the string <code class="bg-gray-200 px-1 rounded">Hello, HSC!</code>.</p>
+                            <h4 class="font-semibold">Sample Input:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">N/A</pre>
+                            <h4 class="font-semibold">Sample Output:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">Hello, HSC!</pre>
+                        </div>
+
+                        <!-- Problem 2: Sum of Two Numbers -->
+                        <div id="problem-2" class="problem-content hidden space-y-3">
+                            <h3 class="text-lg font-semibold text-blue-700">Problem 2: Sum of Two Numbers</h3>
+                            <p>Read two integers from the standard input (stdin) and print their sum to the standard output (stdout).</p>
+                            <h4 class="font-semibold">Input Format:</h4>
+                            <p>A single line containing two space-separated integers, <code class="bg-gray-200 px-1 rounded">a</code> and <code class="bg-gray-200 px-1 rounded">b</code>.</p>
+                            <h4 class="font-semibold">Output Format:</h4>
+                            <p>A single line containing the sum of <code class="bg-gray-200 px-1 rounded">a</code> and <code class="bg-gray-200 px-1 rounded">b</code>.</p>
+                            <h4 class="font-semibold">Constraints:</h4>
+                            <p><code class="bg-gray-200 px-1 rounded">0 &lt;= a, b &lt;= 1000</code></p>
+                            <h4 class="font-semibold">Sample Input:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">5 10</pre>
+                            <h4 class="font-semibold">Sample Output:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">15</pre>
+                        </div>
+
+                        <!-- Problem 3: Leap Year Check -->
+                        <div id="problem-3" class="problem-content hidden space-y-3">
+                            <h3 class="text-lg font-semibold text-blue-700">Problem 3: Leap Year Check</h3>
+                            <p>Given a year, determine if it is a leap year. A leap year is divisible by 4, except for years divisible by 100 unless they are also divisible by 400.</p>
+                            <h4 class="font-semibold">Input Format:</h4>
+                            <p>A single line containing one integer, <code class="bg-gray-200 px-1 rounded">year</code>.</p>
+                            <h4 class="font-semibold">Output Format:</h4>
+                            <p>Print "Leap Year" if it is a leap year, otherwise print "Not a Leap Year".</p>
+                            <h4 class="font-semibold">Constraints:</h4>
+                            <p><code class="bg-gray-200 px-1 rounded">1900 &lt;= year &lt;= 3000</code></p>
+                            <h4 class="font-semibold">Sample Input:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">2000</pre>
+                            <h4 class="font-semibold">Sample Output:</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm">Leap Year</pre>
+                        </div>
+                    </div>
+                    <!-- End of problem content area -->
+
+
+                    <!-- ADDED: Leaderboard Section -->
+                    <div id="leaderboard" class="mt-8">
+                        <h2 class="text-xl font-semibold mb-4 border-b pb-2">Live Leaderboard</h2>
+                        <table class="w-full text-left table-auto">
+                            <thead class="bg-gray-50 border-b-2 border-gray-200">
+                                <tr>
+                                    <th class="py-2 px-4 w-12 font-semibold text-gray-600">Rank</th>
+                                    <th class="py-2 px-4 font-semibold text-gray-600">Name</th>
+                                    <th class="py-2 px-4 w-20 font-semibold text-gray-600 text-right">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <!-- Scores will be injected here by JavaScript -->
+                                <tr>
+                                    <td colspan="3" class="py-4 px-4 text-gray-500 text-center">Loading leaderboard...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Column: Code Editor & Results -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4">Your C Code</h2>
+                    <label for="code-editor" class="block text-sm font-medium text-gray-700 mb-2">C Source Code</label>
+                    <textarea id="code-editor" class="w-full h-96 p-4 rounded-md" spellcheck="false" title="C code editor" placeholder="// Write your C code here" aria-label="C code editor"></textarea>
+                    
+                    <button id="run-button" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out disabled:bg-gray-400">
+                        Run Code
+                    </button>
+                    
+                    <h3 class="text-lg font-semibold mt-6 mb-2">Result:</h3>
+                    <div id="result-area" class="p-4 bg-gray-100 rounded-md min-h-[100px] text-gray-600">
+                        Click "Run Code" to test your solution against the sample case.
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- End Main Contest Area -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 text-center p-4 mt-8">
+        Made with ❤️ by Gemini
+    </footer>
+
+    <!-- 3. JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- STATE & DATA ---
+
+            // Problem data for judging and default code
+            const problems = {
+                'problem-1': {
+                    sampleInput: "",
+                    sampleOutput: "Hello, HSC!",
+                    defaultCode: '#include <stdio.h>\n\nint main() {\n  // Write your code here\n  \n  return 0;\n}'
+                },
+                'problem-2': {
+                    sampleInput: "5 10",
+                    sampleOutput: "15",
+                    defaultCode: '#include <stdio.h>\n\nint main() {\n  // Write your code here\n  \n  return 0;\n}'
+                },
+                'problem-3': {
+                    sampleInput: "2000",
+                    sampleOutput: "Leap Year",
+                    defaultCode: '#include <stdio.h>\n\nint main() {\n  // Write your code here\n  \n  return 0;\n}'
+                }
+            };
+
+            // App's current state
+            let currentProblem = 'problem-1';
+            let score = 0;
+            let globalEndTime = null; 
+            let timerInterval = null;
+            const solvedProblems = { 'problem-1': false, 'problem-2': false, 'problem-3': false };
+
+            // --- DOM ELEMENTS ---
+            
+            // Registration Elements
+            const registrationArea = document.getElementById('registration-area');
+            const participantNameInput = document.getElementById('participant-name');
+            const participantEmailInput = document.getElementById('participant-email');
+            const checkInButton = document.getElementById('check-in-button');
+            const registrationMessage = document.getElementById('registration-message');
+
+            // Main Contest Elements
+            const mainContestArea = document.getElementById('main-contest-area');
+            const displayParticipantName = document.getElementById('display-participant-name');
+            const timerEl = document.getElementById('timer');
+            const timerDisplayEl = document.getElementById('timer-display');
+            const startContestBtn = document.getElementById('start-contest-btn');
+            const scoreEl = document.getElementById('score');
+            const codeEditor = document.getElementById('code-editor');
+            const runButton = document.getElementById('run-button');
+            const resultArea = document.getElementById('result-area');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const problemContents = document.querySelectorAll('.problem-content');
+
+            // --- FUNCTIONS ---
+
+            // Function to update the timer display
+            function updateTimer() {
+                if (!globalEndTime) {
+                    timerEl.textContent = "--:--";
+                    return;
+                }
+
+                const now = Date.now();
+                const timeLeftMs = globalEndTime - now;
+                const timeLeft = Math.floor(timeLeftMs / 1000);
+
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timerEl.textContent = "0:00";
+                    timerEl.classList.add('text-red-600');
+                    resultArea.innerHTML = `<div class="result-base result-fail">
+                        <span>⏰ Time's Up! You can no longer run code.</span>
+                    </div>`;
+                    runButton.disabled = true;
+                    runButton.textContent = "Time's Up!";
+                } else {
+                    timerEl.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                }
+            }
+
+            // Function to update the score display
+            function updateScore() {
+                scoreEl.textContent = score;
+            }
+
+            // Function to switch between problems
+            function switchProblem(problemId) {
+                currentProblem = problemId;
+
+                // Update tab buttons
+                tabButtons.forEach(btn => {
+                    if (btn.dataset.problem === problemId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Update visible problem content
+                problemContents.forEach(content => {
+                    if (content.id === problemId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+
+                // Load default code for the selected problem
+                codeEditor.value = problems[problemId].defaultCode;
+                // Reset result area
+                resultArea.innerHTML = "Click 'Run Code' to test your solution.";
+                resultArea.className = "p-4 bg-gray-100 rounded-md min-h-[100px] text-gray-600";
+            }
+
+            // Function to handle the "Run Code" button click
+            async function handleRunCode() {
+                if (globalEndTime && Date.now() > globalEndTime) {
+                    runButton.disabled = true;
+                    runButton.textContent = "Time's Up!";
+                    return;
+                }
+                if (!globalEndTime) {
+                    resultArea.innerHTML = `<div class="result-base result-error">
+                        <span>✋ Wait for the contest to start!</span>
+                    </div>`;
+                    return;
+                }
+
+                const code = codeEditor.value;
+                const problemData = problems[currentProblem];
+                
+                runButton.disabled = true;
+                runButton.textContent = "Running...";
+                resultArea.innerHTML = `<div class="result-base result-running">
+                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span>Running your code...</span>
+                </div>`;
+
+                try {
+                    const response = await fetch('https://wandbox.org/api/compile.json', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            compiler: 'gcc-head',
+                            code: code,
+                            stdin: problemData.sampleInput
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    handleApiResponse(data, problemData.sampleOutput);
+
+                } catch (error) {
+                    console.error("Fetch Error:", error);
+                    resultArea.innerHTML = `<div class="result-base result-fail">
+                        <span>❌ Network or API Error: ${error.message}. Please check console.</span>
+                    </div>`;
+                } finally {
+                    if (!globalEndTime || Date.now() < globalEndTime) {
+                        runButton.disabled = false;
+                        runButton.textContent = "Run Code";
+                    } else {
+                        runButton.disabled = true;
+                        runButton.textContent = "Time's Up!";
+                    }
+                }
+            }
+            
+            // Function to process the API response and show results
+            function handleApiResponse(data, expectedOutput) {
+                if (data.status !== '0' || data.compiler_error) {
+                    const errorMsg = (data.compiler_error || data.program_error || "Unknown error").replace(/<[^>]*>/g, '');
+                    resultArea.innerHTML = `<div class="result-base result-fail">
+                        <span>❌ Compilation Error!</span>
+                    </div>
+                    <pre class="result-pre">${errorMsg}</pre>`;
+                    return;
+                }
+
+                const actualOutput = (data.program_output || "").trim();
+                const expectedOutputTrimmed = expectedOutput.trim();
+
+                if (actualOutput === expectedOutputTrimmed) {
+                    resultArea.innerHTML = `<div class="result-base result-success">
+                        <span class="text-2xl">✅</span>
+                        <span>Passed! Your code produced the correct sample output.</span>
+                    </div>`;
+                    
+                    if (!solvedProblems[currentProblem]) {
+                        solvedProblems[currentProblem] = true;
+                        score += 10;
+                        updateScore();
+                        saveScoreToFirestore();
+                    }
+                    saveScoreToFirestore();
+
+                } else {
+                    resultArea.innerHTML = `<div class="result-base result-fail">
+                        <span class="text-2xl">❌</span>
+                        <span>Failed (Wrong Answer).</span>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <strong class="text-sm">Expected Output:</strong>
+                        <pre class="result-pre">${expectedOutputTrimmed || "(No Output)"}</pre>
+                        <strong class="text-sm">Your Output:</strong>
+                        <pre class="result-pre">${actualOutput || "(No Output)"}</pre>
+                    </div>`;
+                }
+            }
+
+            // --- Firebase Functions ---
+            
+            let contestDocRef;
+            let leaderboardCollectionRef;
+            let participantsCollectionRef; // ADDED
+
+            // Saves the current score to Firestore
+            async function saveScoreToFirestore() {
+                if (!window.db || !window.auth || !window.auth.currentUser) {
+                    console.warn("Firestore not ready or user not auth'd. Score not saved.");
+                    return;
+                }
+                
+                const userId = window.auth.currentUser.uid;
+                // MODIFIED: Read name from the locked display element
+                let participantName = displayParticipantName.textContent;
+                if (participantName === "") {
+                    participantName = "Anonymous-" + userId.substring(0, 6);
+                }
+                
+                const scoreData = {
+                    name: participantName,
+                    score: score,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                try {
+                    const scoreDocRef = window.db.collection('artifacts').doc(window.appId || 'default-app-id')
+                                            .collection('public').doc('data')
+                                            .collection('scores').doc(userId);
+                                            
+                    await scoreDocRef.set(scoreData, { merge: true });
+                    console.log("Score saved to Firestore:", scoreData);
+                } catch (error)
+                 {
+                    console.error("Error saving score:", error);
+                }
+            }
+
+
+            // Listens for the global timer
+            function listenToContestTimer() {
+                if (!window.db) {
+                    console.warn("Firestore not ready. Timer sync disabled.");
+                    startContestBtn.classList.remove('hidden');
+                    timerEl.classList.add('hidden');
+                    startContestBtn.addEventListener('click', () => {
+                        globalEndTime = Date.now() + 30 * 60 * 1000;
+                        startContestBtn.classList.add('hidden');
+                        timerEl.classList.remove('hidden');
+                        if (!timerInterval) {
+                            timerInterval = setInterval(updateTimer, 1000);
+                        }
+                    });
+                    return;
+                }
+                
+                contestDocRef = window.db.collection('artifacts').doc(window.appId || 'default-app-id')
+                                    .collection('public').doc('data')
+                                    .collection('contest').doc('timer');
+
+                leaderboardCollectionRef = window.db.collection('artifacts').doc(window.appId || 'default-app-id')
+                                            .collection('public').doc('data')
+                                            .collection('scores');
+                
+                // ADDED: Define participants ref
+                participantsCollectionRef = window.db.collection('artifacts').doc(window.appId || 'default-app-id')
+                                            .collection('public').doc('data')
+                                            .collection('participants');
+
+                contestDocRef.onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        globalEndTime = data.endTime;
+                        startContestBtn.classList.add('hidden');
+                        timerEl.classList.remove('hidden');
+                        if (!timerInterval) {
+                            timerInterval = setInterval(updateTimer, 1000);
+                        }
+                        updateTimer();
+                    } else {
+                        console.log("No contest timer found. Show 'Start' button.");
+                        startContestBtn.classList.remove('hidden');
+                        timerEl.classList.add('hidden');
+                    }
+                }, (error) => {
+                    console.error("Error listening to timer:", error);
+                });
+            }
+            
+            // Listens for leaderboard updates
+            function listenToLeaderboard() {
+                if (!leaderboardCollectionRef) {
+                    console.warn("Leaderboard ref not ready.");
+                    return;
+                }
+                
+                const leaderboardEl = document.getElementById('leaderboard-body');
+
+                leaderboardCollectionRef.onSnapshot((querySnapshot) => {
+                    const scores = [];
+                    querySnapshot.forEach((doc) => {
+                        scores.push(doc.data());
+                    });
+                    
+                    scores.sort((a, b) => {
+                        if (b.score === a.score) {
+                            return new Date(a.lastUpdated) - new Date(b.lastUpdated);
+                        }
+                        return b.score - a.score;
+                    });
+                    
+                    leaderboardEl.innerHTML = "";
+                    if (scores.length === 0) {
+                        leaderboardEl.innerHTML = '<tr><td colspan="3" class="py-2 px-4 text-gray-500 text-center">No scores yet!</td></tr>';
+                        return;
+                    }
+                    
+                    scores.forEach((entry, index) => {
+                        const row = document.createElement('tr');
+                        row.className = "border-b border-gray-200 hover:bg-gray-100";
+                        row.innerHTML = `
+                            <td class="py-2 px-4 font-medium">${index + 1}</td>
+                            <td class="py-2 px-4">${entry.name || 'Anonymous'}</td>
+                            <td class="py-2 px-4 font-bold text-right">${entry.score}</td>
+                        `;
+                        leaderboardEl.appendChild(row);
+                    });
+                    
+                }, (error) => {
+                    console.error("Error listening to leaderboard:", error);
+                    leaderboardEl.innerHTML = '<tr><td colspan="3" class="py-2 px-4 text-red-500">Error loading scores.</td></tr>';
+                });
+            }
+
+            // Starts the global timer
+            async function startContest() {
+                if (!contestDocRef) return;
+                
+                try {
+                    const endTime = Date.now() + 30 * 60 * 1000;
+                    await contestDocRef.set({ endTime: endTime });
+                    console.log("Contest started!");
+                } catch (error) {
+                    console.error("Failed to start contest:", error);
+                    resultArea.innerHTML = `<div class="result-base result-error">
+                        <span>Error starting contest: ${error.message}</span>
+                    </div>`;
+                }
+            }
+            
+            // NEW FUNCTION: Handle participant check-in
+            async function handleCheckIn() {
+                if (!participantsCollectionRef) {
+                    console.warn("Firestore not ready for check-in.");
+                    registrationMessage.textContent = "Error: Database not ready. Please refresh.";
+                    registrationMessage.className = "mt-4 text-sm font-medium text-red-600";
+                    return;
+                }
+                
+                const name = participantNameInput.value.trim();
+                const email = participantEmailInput.value.trim();
+                
+                if (!name || !email) {
+                    registrationMessage.textContent = "Please enter both name and email.";
+                    registrationMessage.className = "mt-4 text-sm font-medium text-red-600";
+                    return;
+                }
+                
+                checkInButton.disabled = true;
+                checkInButton.textContent = "Checking...";
+                registrationMessage.textContent = "Verifying your details...";
+                registrationMessage.className = "mt-4 text-sm font-medium text-blue-600";
+                
+                try {
+                    const q = participantsCollectionRef.where("name", "==", name).where("email", "==", email);
+                    const querySnapshot = await q.get();
+                    
+                    if (querySnapshot.empty) {
+                        // No match found
+                        registrationMessage.textContent = "Check-in failed. Name or email not found in participant list.";
+                        registrationMessage.className = "mt-4 text-sm font-medium text-red-600";
+                        checkInButton.disabled = false;
+                        checkInButton.textContent = "Check-In";
+                    } else {
+                        // Match found!
+                        registrationMessage.textContent = "Check-in successful! Loading contest...";
+                        registrationMessage.className = "mt-4 text-sm font-medium text-green-600";
+                        
+                        // Hide registration, show contest
+                        registrationArea.classList.add('hidden');
+                        displayParticipantName.textContent = name; // Set name in main UI
+                        mainContestArea.classList.remove('hidden');
+                        
+                        // NOW initialize the contest
+                        initializeContest();
+                    }
+                } catch (error) {
+                    console.error("Check-in error:", error);
+                    registrationMessage.textContent = `An error occurred: ${error.message}`;
+                    registrationMessage.className = "mt-4 text-sm font-medium text-red-600";
+                    checkInButton.disabled = false;
+                    checkInButton.textContent = "Check-In";
+                }
+            }
+            
+            // NEW FUNCTION: To start the contest AFTER check-in
+            function initializeContest() {
+                // 1. Set up tab-switching listeners
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        switchProblem(button.dataset.problem);
+                    });
+                });
+
+                // 2. Set up "Run" button listener
+                runButton.addEventListener('click', handleRunCode);
+                
+                // 3. Set up "Start Contest" button listener
+                startContestBtn.addEventListener('click', startContest);
+
+                // 4. Start listening to the global timer
+                listenToContestTimer();
+                
+                // 5. Start listening to the leaderboard
+                listenToLeaderboard();
+
+                // 6. Load the first problem
+                switchProblem('problem-1');
+            }
+
+            // --- INITIALIZATION ---
+
+            // Run after Firebase auth is ready
+            document.addEventListener('firebaseAuthReady', () => {
+                console.log("Auth ready, initializing app.");
+                
+                // MODIFIED: Only set up check-in button listener.
+                // Contest init happens *after* successful check-in.
+                if (window.db) {
+                    // Define participants ref early for check-in
+                    participantsCollectionRef = window.db.collection('artifacts').doc(window.appId || 'default-app-id')
+                                            .collection('public').doc('data')
+                                            .collection('participants');
+                }
+                
+                checkInButton.addEventListener('click', handleCheckIn);
+            });
+        });
+    </script>
+</body>
+</html>

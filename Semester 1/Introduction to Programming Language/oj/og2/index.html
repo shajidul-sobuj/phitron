@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC C Programming Practice Contest</title>
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Custom styles for the app -->
+    <style>
+        /* Simple styling for the active tab */
+        .tab-btn.active {
+            border-bottom-width: 2px;
+            --tw-border-opacity: 1;
+            border-color: rgb(59 130 246 / var(--tw-border-opacity));
+            --tw-text-opacity: 1;
+            color: rgb(59 130 246 / var(--tw-text-opacity));
+            font-weight: 600;
+        }
+        /* Style the code editor (textarea) */
+        #code-editor {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            background-color: #1e293b; /* slate-800 */
+            color: #f1f5f9; /* slate-100 */
+            border: 2px solid #334155; /* slate-700 */
+            caret-color: #34d399; /* emerald-400 */
+        }
+        /* Custom styles for result boxes */
+        .result-base {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .result-success {
+            background-color: #dcfce7; /* green-100 */
+            border: 1px solid #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+        }
+        .result-fail {
+            background-color: #fee2e2; /* red-100 */
+            border: 1px solid #f87171; /* red-400 */
+            color: #991b1b; /* red-800 */
+        }
+        .result-running {
+            background-color: #e0e7ff; /* indigo-100 */
+            border: 1px solid #818cf8; /* indigo-400 */
+            color: #3730a3; /* indigo-800 */
+        }
+        .result-error {
+            background-color: #fef9c3; /* yellow-100 */
+            border: 1px solid #facc15; /* yellow-400 */
+            color: #713f12; /* yellow-800 */
+        }
+        .result-pre {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #1f2937; /* gray-800 */
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900 antialiased">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md w-full">
+        <div class="container mx-auto p-4">
+            <h1 class="text-2xl font-bold">Welcome to HSC C Contest</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 my-6">
+
+        <!-- Optional Info Bar (Name, Timer, Score) -->
+        <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <label for="participant-name" class="block text-sm font-medium text-gray-700">Participant Name:</label>
+                <input type="text" id="participant-name" placeholder="Enter your name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+            </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-center items-center">
+                <div class="text-sm font-medium text-gray-700">Time Left</div>
+                <div id="timer" class="text-3xl font-bold text-blue-600">30:00</div>
+
+                <!-- Global timer controls: optional. If you want a contest-wide timer that starts for everyone,
+                     paste your Firebase config into the FIREBASE_CONFIG variable in the script below. -->
+                <div class="mt-2 w-full flex flex-col items-center">
+                    <label class="text-sm text-gray-600">
+                        <input type="checkbox" id="global-toggle" class="mr-2 align-middle"> Use Global Timer
+                    </label>
+                    <div class="mt-2 flex items-center gap-2">
+                        <button id="admin-start-btn" class="px-3 py-1 bg-green-600 text-white rounded-md text-sm" disabled>Start Contest (Admin)</button>
+                        <div id="global-status" class="text-sm text-gray-600">Global timer disabled</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-center items-center">
+                <div class="text-sm font-medium text-gray-700">Total Score</div>
+                <div id="score" class="text-3xl font-bold text-green-600">0</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Left Column: Problems -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 border-b pb-2">Contest Problems</h2>
+                
+                <!-- Problem Tabs -->
+                <div class="flex border-b mb-4 space-x-4">
+                    <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600 active" data-problem="problem-1">Problem 1</button>
+                    <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600" data-problem="problem-2">Problem 2</button>
+                    <button class="tab-btn py-2 px-4 text-gray-600 hover:text-blue-600" data-problem="problem-3">Problem 3</button>
+                </div>
+
+                <!-- Problem Content Area -->
+                <div class="space-y-4">
+                    <!-- Problem 1: Hello World -->
+                    <div id="problem-1" class="problem-content space-y-3">
+                        <h3 class="text-lg font-semibold text-blue-700">Problem 1: Hello, HSC!</h3>
+                        <p>Your first task is to print the exact string <strong>"Hello, HSC!"</strong> to the console.</p>
+                        
+                        <h4 class="font-semibold">Input Format:</h4>
+                        <p>No input is required for this problem.</p>
+                        
+                        <h4 class="font-semibold">Output Format:</h4>
+                        <p>A single line containing the string <code class="bg-gray-200 px-1 rounded">Hello, HSC!</code>.</p>
+                        
+                        <h4 class="font-semibold">Constraints:</h4>
+                        <p>N/A</p>
+
+                        <h4 class="font-semibold">Sample Input:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">N/A</pre>
+                        
+                        <h4 class="font-semibold">Sample Output:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">Hello, HSC!</pre>
+                    </div>
+
+                    <!-- Problem 2: Sum of Two Numbers -->
+                    <div id="problem-2" class="problem-content hidden space-y-3">
+                        <h3 class="text-lg font-semibold text-blue-700">Problem 2: Sum of Two Numbers</h3>
+                        <p>Read two integers from the standard input (stdin) and print their sum to the standard output (stdout).</p>
+                        
+                        <h4 class="font-semibold">Input Format:</h4>
+                        <p>A single line containing two space-separated integers, <code class="bg-gray-200 px-1 rounded">a</code> and <code class="bg-gray-200 px-1 rounded">b</code>.</p>
+                        
+                        <h4 class="font-semibold">Output Format:</h4>
+                        <p>A single line containing the sum of <code class="bg-gray-200 px-1 rounded">a</code> and <code class="bg-gray-200 px-1 rounded">b</code>.</p>
+
+                        <h4 class="font-semibold">Constraints:</h4>
+                        <p><code class="bg-gray-200 px-1 rounded">0 &lt;= a, b &lt;= 1000</code></p>
+                        
+                        <h4 class="font-semibold">Sample Input:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">5 10</pre>
+                        
+                        <h4 class="font-semibold">Sample Output:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">15</pre>
+                    </div>
+
+                    <!-- Problem 3: Leap Year Check -->
+                    <div id="problem-3" class="problem-content hidden space-y-3">
+                        <h3 class="text-lg font-semibold text-blue-700">Problem 3: Leap Year Check</h3>
+                        <p>Given a year, determine if it is a leap year. A leap year is divisible by 4, except for years divisible by 100 unless they are also divisible by 400.</p>
+                        
+                        <h4 class="font-semibold">Input Format:</h4>
+                        <p>A single line containing one integer, <code class="bg-gray-200 px-1 rounded">year</code>.</p>
+                        
+                        <h4 class="font-semibold">Output Format:</h4>
+                        <p>Print "Leap Year" if it is a leap year, otherwise print "Not a Leap Year".</p>
+                        
+                        <h4 class="font-semibold">Constraints:</h4>
+                        <p><code class="bg-gray-200 px-1 rounded">1900 &lt;= year &lt;= 3000</code></p>
+
+                        <h4 class="font-semibold">Sample Input:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">2000</pre>
+                        
+                        <h4 class="font-semibold">Sample Output:</h4>
+                        <pre class="bg-gray-100 p-2 rounded-md text-sm">Leap Year</pre>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Column: Code Editor & Results -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">Your C Code</h2>
+                <textarea id="code-editor" class="w-full h-96 p-4 rounded-md" spellcheck="false">
+                </textarea>
+                
+                <button id="run-button" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out disabled:bg-gray-400">
+                    Run Code
+                </button>
+                
+                <h3 class="text-lg font-semibold mt-6 mb-2">Result:</h3>
+                <div id="result-area" class="p-4 bg-gray-100 rounded-md min-h-[100px] text-gray-600">
+                    Click "Run Code" to test your solution against the sample case.
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 text-center p-4 mt-8">
+        Made with ❤️ by Gemini
+    </footer>
+
+    <!-- 3. JavaScript Logic -->
+    <!-- Optional Firebase SDK for global/shared timer (remove if you won't use global timer).
+         If you enable the global timer, paste your Firebase config into the FIREBASE_CONFIG variable
+         in the script below and make sure your Realtime Database rules allow reads (and only admin writes).
+    -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- CONFIG: Paste your Firebase config here to enable global/shared timer ---
+            // Example:
+            // const FIREBASE_CONFIG = {
+            //   apiKey: "...",
+            //   authDomain: "...",
+            //   databaseURL: "https://<project>.firebaseio.com",
+            //   projectId: "...",
+            //   storageBucket: "...",
+            //   messagingSenderId: "...",
+            //   appId: "..."
+            // };
+            const FIREBASE_CONFIG = null; // <-- set to your config object to enable global timer
+
+            // --- STATE & DATA ---
+            const contestDuration = 30 * 60; // seconds
+            let isGlobalTimer = false;
+            let globalStartTime = null; // epoch ms (from DB)
+            let timeLeft = contestDuration;
+
+            // Problem data for judging and default code
+            const problems = {
+                'problem-1': { sampleInput: "", sampleOutput: "Hello, HSC!", defaultCode: '' },
+                'problem-2': { sampleInput: "5 10", sampleOutput: "15", defaultCode: '' },
+                'problem-3': { sampleInput: "2000", sampleOutput: "Leap Year", defaultCode: '' }
+            };
+
+            // App's current state
+            let currentProblem = 'problem-1';
+            let score = 0;
+            const solvedProblems = { 'problem-1': false, 'problem-2': false, 'problem-3': false };
+            let timerInterval = null;
+
+            // --- DOM ELEMENTS ---
+            const timerEl = document.getElementById('timer');
+            const scoreEl = document.getElementById('score');
+            const codeEditor = document.getElementById('code-editor');
+            const runButton = document.getElementById('run-button');
+            const resultArea = document.getElementById('result-area');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const problemContents = document.querySelectorAll('.problem-content');
+            const globalToggle = document.getElementById('global-toggle');
+            const adminStartBtn = document.getElementById('admin-start-btn');
+            const globalStatus = document.getElementById('global-status');
+
+            // --- Firebase (optional) ---
+            let firebaseEnabled = false;
+            let dbRef = null;
+            if (FIREBASE_CONFIG) {
+                try {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                    const db = firebase.database();
+                    dbRef = db.ref('contest/startTime');
+                    firebaseEnabled = true;
+                } catch (e) {
+                    console.warn('Firebase init failed:', e);
+                    firebaseEnabled = false;
+                }
+            }
+
+            // If firebase is enabled, wire DB listener
+            if (firebaseEnabled && dbRef) {
+                // Listen for startTime changes
+                dbRef.on('value', snapshot => {
+                    const v = snapshot.val();
+                    if (v) {
+                        globalStartTime = Number(v);
+                    } else {
+                        globalStartTime = null;
+                    }
+                    updateGlobalStatus();
+                });
+                adminStartBtn.disabled = false;
+                globalStatus.textContent = 'Global timer available (waiting)';
+            } else {
+                adminStartBtn.disabled = true;
+                globalStatus.textContent = 'Global timer not configured';
+            }
+
+            // --- FUNCTIONS ---
+            function updateGlobalStatus() {
+                if (!isGlobalTimer) {
+                    globalStatus.textContent = firebaseEnabled ? 'Global timer available (disabled)' : 'Global timer not configured';
+                    return;
+                }
+                if (!firebaseEnabled) {
+                    globalStatus.textContent = 'Global timer not configured';
+                    return;
+                }
+                if (!globalStartTime) {
+                    globalStatus.textContent = 'Global timer enabled — waiting for admin to start contest';
+                } else {
+                    const startedAgo = Math.floor((Date.now() - globalStartTime) / 1000);
+                    globalStatus.textContent = `Contest started ${startedAgo} sec ago`;
+                }
+            }
+
+            // Function to update the timer display (supports both local and global modes)
+            function updateTimer() {
+                if (isGlobalTimer) {
+                    // If global timer enabled but not started yet
+                    if (!globalStartTime) {
+                        timerEl.textContent = '--:--';
+                        return;
+                    }
+                    const elapsed = Math.floor((Date.now() - globalStartTime) / 1000);
+                    let remaining = contestDuration - elapsed;
+                    if (remaining <= 0) {
+                        remaining = 0;
+                        // Time's up actions
+                        timerEl.textContent = '0:00';
+                        timerEl.classList.add('text-red-600');
+                        resultArea.innerHTML = `<div class="result-base result-fail"><span>⏰ Time's Up! You can no longer run code.</span></div>`;
+                        runButton.disabled = true;
+                        runButton.textContent = "Time's Up!";
+                        clearInterval(timerInterval);
+                        return;
+                    }
+                    timeLeft = remaining;
+                } else {
+                    // Local timer behavior
+                    if (timeLeft <= 0) {
+                        timerEl.textContent = '0:00';
+                        timerEl.classList.add('text-red-600');
+                        resultArea.innerHTML = `<div class="result-base result-fail"><span>⏰ Time's Up! You can no longer run code.</span></div>`;
+                        runButton.disabled = true;
+                        runButton.textContent = "Time's Up!";
+                        clearInterval(timerInterval);
+                        return;
+                    }
+                    timeLeft--;
+                }
+
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            // Function to update the score display
+            function updateScore() { scoreEl.textContent = score; }
+
+            // Function to switch between problems
+            function switchProblem(problemId) {
+                currentProblem = problemId;
+                tabButtons.forEach(btn => btn.dataset.problem === problemId ? btn.classList.add('active') : btn.classList.remove('active'));
+                problemContents.forEach(content => content.id === problemId ? content.classList.remove('hidden') : content.classList.add('hidden'));
+                codeEditor.value = problems[problemId].defaultCode;
+                resultArea.innerHTML = "Click 'Run Code' to test your solution.";
+                resultArea.className = "p-4 bg-gray-100 rounded-md min-h-[100px] text-gray-600";
+            }
+
+            // Run Code handler (keeps existing Wandbox call behavior)
+            async function handleRunCode() {
+                // If using global timer, ensure contest has started
+                if (isGlobalTimer && !globalStartTime) {
+                    resultArea.innerHTML = `<div class="result-base result-error"><span>⏳ Waiting for admin to start the contest.</span></div>`;
+                    return;
+                }
+
+                // Do not run if time is up
+                if (timeLeft <= 0) {
+                    runButton.disabled = true;
+                    runButton.textContent = "Time's Up!";
+                    return;
+                }
+
+                const code = codeEditor.value;
+                const problemData = problems[currentProblem];
+
+                runButton.disabled = true;
+                runButton.textContent = "Running...";
+                resultArea.innerHTML = `<div class="result-base result-running"><svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Running your code...</span></div>`;
+
+                try {
+                    const response = await fetch('https://wandbox.org/api/compile.json', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ compiler: 'gcc-head', code: code, stdin: problemData.sampleInput })
+                    });
+                    if (!response.ok) throw new Error(`API Error ${response.status}: ${response.statusText}`);
+                    const data = await response.json();
+                    handleApiResponse(data, problemData.sampleOutput);
+                } catch (error) {
+                    console.error("Fetch Error:", error);
+                    resultArea.innerHTML = `<div class="result-base result-fail"><span>❌ Network or API Error: ${error.message}. Please check console.</span></div>`;
+                } finally {
+                    if (timeLeft > 0) { runButton.disabled = false; runButton.textContent = "Run Code"; }
+                }
+            }
+
+            function handleApiResponse(data, expectedOutput) {
+                if (data.status !== '0' || data.compiler_error) {
+                    const errorMsg = (data.compiler_error || data.program_error || "Unknown error").replace(/<[^>]*>/g, '');
+                    resultArea.innerHTML = `<div class="result-base result-fail"><span>❌ Compilation Error!</span></div><pre class="result-pre">${errorMsg}</pre>`;
+                    return;
+                }
+                const actualOutput = (data.program_output || "").trim();
+                const expectedOutputTrimmed = expectedOutput.trim();
+                if (actualOutput === expectedOutputTrimmed) {
+                    resultArea.innerHTML = `<div class="result-base result-success"><span class="text-2xl">✅</span><span>Passed! Your code produced the correct sample output.</span></div>`;
+                    if (!solvedProblems[currentProblem]) { solvedProblems[currentProblem] = true; score += 10; updateScore(); }
+                } else {
+                    resultArea.innerHTML = `<div class="result-base result-fail"><span class="text-2xl">❌</span><span>Failed (Wrong Answer).</span></div><div class="mt-2 space-y-1"><strong class="text-sm">Expected Output:</strong><pre class="result-pre">${expectedOutputTrimmed || "(No Output)"}</pre><strong class="text-sm">Your Output:</strong><pre class="result-pre">${actualOutput || "(No Output)"}</pre></div>`;
+                }
+            }
+
+            // --- Event wiring ---
+            tabButtons.forEach(button => button.addEventListener('click', () => switchProblem(button.dataset.problem)));
+            runButton.addEventListener('click', handleRunCode);
+
+            // Global toggle behavior
+            globalToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (!firebaseEnabled) {
+                        alert('Global timer is not configured. Paste your Firebase config in the HTML to enable it.');
+                        e.target.checked = false;
+                        return;
+                    }
+                    isGlobalTimer = true;
+                } else {
+                    isGlobalTimer = false;
+                }
+                updateGlobalStatus();
+            });
+
+            // Admin start button writes the start timestamp to the DB
+            adminStartBtn.addEventListener('click', async () => {
+                if (!firebaseEnabled || !dbRef) return;
+                try {
+                    const now = Date.now();
+                    await dbRef.set(now);
+                    // admin clicked start; clients will receive the update via the listener
+                } catch (e) {
+                    console.error('Failed to write start time:', e);
+                    alert('Failed to start contest (check console).');
+                }
+            });
+
+            // --- Start internal timer loop ---
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // Load first problem
+            switchProblem('problem-1');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"name":"Local: pr","url":"e:\\Phitron\\pps project\\pr.c","tests":[{"id":1765209790857,"input":"5\nhello\nhi\ngello\nhello\nkello\n\nhello","output":"2\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Phitron\\pps project\\pr.c","group":"local","local":true}

@@ -1,0 +1,10 @@
+body { background:#f7f9fc; }
+.problem-box { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.small-muted { font-size:0.9rem; color:#6c757d; }
+.editor { font-family: monospace; font-size:14px; }
+pre.output { background:#0b1220; color:#e6eef8; padding:12px; border-radius:6px; }
+.passed { color: #198754; font-weight:600; }
+.failed { color: #dc3545; font-weight:600; }
+.timer { font-weight:700; font-size:1.05rem; }
+
+.card input { max-width:100%; }
